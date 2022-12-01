@@ -16,7 +16,7 @@ public class AddressBookRepo {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("Drivers loaded!!");
-            connection = DriverManager.getConnection(URL_JD,USER_NAME,PASSWORD);
+            connection = DriverManager.getConnection(URL_JD, USER_NAME, PASSWORD);
             System.out.println("connection Established!!");
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -25,9 +25,9 @@ public class AddressBookRepo {
     }
 
 
-    public java.util.List<Contacts> retrieveData() {
+    public List<Contacts> retrieveData() {
         ResultSet resultSet = null;
-        List<Contacts> addressBookList = new ArrayList<>();
+        List<Contacts> addressBookList = new ArrayList<Contacts>();
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
             String sql = "select * from AddressBook";
@@ -75,7 +75,7 @@ public class AddressBookRepo {
         List<Contacts> addressBookList = new ArrayList<Contacts>();
         try (Connection connection = getConnection()) {
             Statement statement = connection.createStatement();
-            String sql = "select * from AddressBook where date_added between cast(' "+ date + "'" +" as date)  and date(now());";
+            String sql = "select * from AddressBook where date_added between cast(' " + date + "'" + " as date)  and date(now());";
             resultSet = statement.executeQuery(sql);
             int count = 0;
             while (resultSet.next()) {
@@ -100,4 +100,33 @@ public class AddressBookRepo {
         return addressBookList;
     }
 
+    public int countByCiy(String city) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "select count(firstname) from AddressBook where city=" + "'" + city + "';";
+            ResultSet result = statement.executeQuery(sql);
+            result.next();
+            int count = result.getInt(1);
+
+
+            return count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countByState(String state) {
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            String sql = "select count(firstname) from AddressBook where city=" + "'" + state + "';";
+            ResultSet result = statement.executeQuery(sql);
+            result.next();
+            int count = result.getInt(1);
+            return count;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 }
